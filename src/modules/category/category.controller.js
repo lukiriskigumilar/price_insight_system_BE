@@ -5,7 +5,7 @@ const categoriesController = {
     GetCategoryList: async (req, res) => {
         try {
             const categories = await categoriesService.getAllCategories();
-            responseHelper.sendSuccessResponse(res,"retrived categories successfully", categories,200);
+            responseHelper.sendSuccessResponse(res,"retrived categories successfully", categories, null,200);
         } catch (error) {
             console.error("Error fetching categories:", error);
             responseHelper.sendErrorResponse(res,"Failed to fetch categories", error,500);
