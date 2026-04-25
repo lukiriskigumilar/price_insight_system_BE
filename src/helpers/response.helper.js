@@ -20,7 +20,7 @@ const sendErrorResponse = (res, message, errors = [], statusCode=500 ) => {
     })
 } 
 
-module.exports = {
+export default {
     sendSuccessResponse,
     sendErrorResponse,
 }
