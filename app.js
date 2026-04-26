@@ -7,8 +7,12 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
-app.use(errorMiddleware);
+
+
 app.use('/api', routes);
+
+
+app.use(errorMiddleware);
 
 app.listen(3000, () => {
   console.log('Server running on port 3000');
