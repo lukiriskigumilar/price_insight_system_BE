@@ -8,7 +8,6 @@ puppeteer.use(StealthPlugin())
 
 const scrapeProducts = async (keyword) => {
   try {
-    // Ubah ke false jika kamu ingin melihat wujud browser terbuka saat script jalan
     const browser = await puppeteer.launch({ 
       headless: true,
       args: [
@@ -30,7 +29,7 @@ const scrapeProducts = async (keyword) => {
     try {
       await page.waitForSelector('[data-qa-locator="product-item"]', { timeout: 15000 })
     } catch (error) {
-      console.log('[Warning] Gagal memuat halaman produk atau produk tidak ditemukan.')
+      throw new AppError('Failed to load product items on Lazada page. The structure of the page may have changed or the selector is incorrect.', 500)
     }
 
     const content = await page.content()
@@ -66,12 +65,11 @@ const scrapeProducts = async (keyword) => {
          }
       }
 
-      // Catatan Rating: Angka (271) adalah "Jumlah Ulasan", bukan skor rating (1.0 - 5.0).
-      // Karena database menggunakan Float, kita biarkan null atau bisa kamu ubah logikanya di sini.
+      // Lazada tidak selalu menampilkkan rating di halaman kategori, jadi di set null saja 
       let rating = null
 
       // Percobaan ekstraksi Nama Toko
-      // Di Lazada, nama toko sering kali muncul sebagai atribut "title" pada link (tag a) selain produk
+      // Di Lazada, nama toko tidak di tampilkan 
       let store_name = null
       
       // Fallback (opsi cadangan) mencari nama toko dari teks link terakhir di bawah
@@ -100,8 +98,6 @@ const scrapeProducts = async (keyword) => {
         }
       }
     })
-
-    console.log(`Berhasil mengekstrak ${results.length} produk dari Lazada. Data yang akan dikirim:`, results)
     return results
     
   } catch (error) {
