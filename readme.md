@@ -73,3 +73,72 @@ Aplikasi sekarang berjalan di `http://localhost:3000`
 
 ---
 
+## 📖 Dokumentasi API (Routing)
+
+Aplikasi ini menggunakan *prefix* `/api` untuk semua *endpoint*. Berikut adalah daftar *route* utama yang tersedia:
+
+### 1. Sinkronisasi Data Produk (Scraping)
+Memicu bot scraper (Puppeteer & Axios) untuk mencari produk berdasarkan *keyword* dan menyimpannya ke database PostgreSQL. Dilengkapi validasi *payload* menggunakan Joi.
+- **Method:** `POST`
+- **Endpoint:** `/api/product-sync`
+- **Payload (JSON):**
+  ```json
+  {
+      "keyword": "iphone"
+  }
+  ```
+- **Response (201 Created):**
+  ```json
+  {
+      "status": "success",
+      "message": "Successfully added 40 products",
+      "data": null,
+  }
+  ```
+
+### 2. Ambil Daftar Produk
+Mengambil daftar produk yang sudah tersimpan di database. Mendukung filter pencarian berdasarkan nama kategori menggunakan *query parameter*.
+- **Method:** `GET`
+- **Endpoint:** `/api/products`
+- **Query Parameters (Opsional):**
+  - `category` (string) - Contoh: `?category=iphone`
+- **Response (200 OK):**
+  ```json
+  {
+      "status": "success",
+      "message": "success get products with category \"iphone\"",
+      "data": [
+          {
+              "id": 1,
+              "title": "Apple iPhone 14 Pro Max",
+              "price": 15000000,
+              "rating": null,
+              "total_sold": 1500,
+              "source": "scraping",
+              "store_name": null,
+              "product_url": "https://lazada.co.id/...",
+              "category_id": 1
+          }
+      ]
+  }
+  ```
+
+### 3. Analisis & Statistik Produk
+Mengambil ringkasan data produk (Total, Rata-rata Harga, Harga Termurah, Harga Termahal). Sangat berguna untuk *dashboard* analitik. Mendukung filter pencarian berdasarkan nama kategori.
+- **Method:** `GET`
+- **Endpoint:** `/api/products/stats`
+- **Query Parameters (Opsional):**
+  - `category` (string) - Contoh: `?category=iphone`
+- **Response (200 OK):**
+  ```json
+  {
+      "status": "success",
+      "message": "success get product stats with category \"iphone\"",
+      "data": {
+          "totalProducts": 42,
+          "averagePrice": 12500000,
+          "minPrice": 9000000,
+          "maxPrice": 22000000
+      },
+  }
+
